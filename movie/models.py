@@ -35,7 +35,7 @@ class Movie(models.Model):
     movie_name = models.CharField(max_length=100)
     release_date = models.DateField(max_length=8, blank=True, null=True)
     plot = models.CharField(max_length=500, blank=True, null=True)
-    poster = models.ImageField(blank=True, null=True, upload_to='media')
+    poster = models.URLField(blank=True, null=True)
     actor = models.ManyToManyField(Actor, related_name='actor', blank=True)
     producer = models.ManyToManyField(Producer, related_name='producer', blank=True)
 

@@ -3,10 +3,11 @@ import logging
 
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
+from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 
 from Lib.smd_response import SMD_Response
-from movie.models import Actor, Producer
+from movie.models import Actor, Producer, Movie
 from movie.serializers import MovieSerializer, ActorSerializer, ProducerSerializer
 
 logger = logging.getLogger(__name__)
@@ -132,6 +133,31 @@ class AddMovie(GenericAPIView):
         :return: save the details of a movie in database
         """
         try:
+            # import pdb
+            # pdb.set_trace()
+            data = request.data
+            if 'actor' in data:
+                actor_list = []
+                actors = data['actor']
+                for name in actors:
+                    obj = Actor.objects.get(actor_name=name)
+                    if obj:
+                        actor_list.append(obj.id)
+                    else:
+                        return Response(SMD_Response(message="Something went wrong when"
+                                                             "while adding actors"))
+                data['actor'] = actor_list
+            if 'producer' in data:
+                producer_list = []
+                producers = data['producer']
+                for name in producers:
+                    obj = Producer.objects.get(producer_name=name)
+                    if obj:
+                        producer_list.append(obj.id)
+                    else:
+                        return Response(SMD_Response(message="Something went wrong when"
+                                                             "while adding producers"))
+                data['producer'] = producer_list
             serializer = MovieSerializer(data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -148,3 +174,30 @@ class AddMovie(GenericAPIView):
             logger.error("Something went wrong-" + str(e))
             smd = SMD_Response(message="Something Went Wrong")
             return Response(smd, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetAllMovie(GenericAPIView):
+    serializer_class = ProducerSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+
+        :param request: Request for getting all the movie details
+        :return: the details of all producers
+        """
+        try:
+            all_movie = Movie.objects.all()
+            if all_movie:
+                serializer = MovieSerializer(all_movie, many=True)
+                logger.info("Successfully get the movie details from the database")
+                smd = SMD_Response(status=True, message="Successfully get the movie details from the database",
+                                   data=[serializer.data])
+                return Response(smd, status=status.HTTP_201_CREATED)
+            else:
+                logger.error("No data available to be fetch from DATABASE")
+                smd = SMD_Response(status=False, message="No Content Available")
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.warning("Something went wrong-" + str(e))
+            smd = SMD_Response(message="Something went wrong")
+            return Response(smd, status=status.HTTP_404_NOT_FOUND)
