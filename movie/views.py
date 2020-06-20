@@ -41,7 +41,7 @@ class AddActor(GenericAPIView):
             return Response(smd, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetAllActor(GenericAPIView):
+class GetAllActors(GenericAPIView):
     serializer_class = ActorSerializer
 
     def get(self, request, *args, **kwargs):
@@ -100,6 +100,70 @@ class GetActorWithID(GenericAPIView):
             return Response(smd, status=status.HTTP_404_NOT_FOUND)
 
 
+class UpdateActorDetailsWithID(GenericAPIView):
+    serializer_class = ActorSerializer
+
+    def put(self, request, id, *args, **kwargs):
+        """
+        :param request:Request for put(update) the Actor Details
+        :param id:Here, we pass an ID for update of a specific Actor
+        :return:It will update a requested Actor Object in Database
+        """
+        try:
+            actor_obj = Actor.objects.get(id=id)
+            if actor_obj is not None:
+                data = request.data
+                serializer = ActorSerializer(actor_obj, data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    logger.info("Successfully Updated the Details of the Actor")
+                    smd = SMD_Response(status=True, message="Actors Details Successfully Updated",
+                                       data=[serializer.data])
+                    return Response(smd, status=status.HTTP_202_ACCEPTED)
+                else:
+                    logger.error("Please provide valid details")
+                    smd = SMD_Response(message="Invalid Request/No such query exist",
+                                       data=[serializer.errors])
+                    return Response(smd, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                logger.info("No DATA Present")
+                return Response(SMD_Response(message="No Data Present"),
+                                status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("SOMETHING WENT WRONG" + str(e))
+            return Response(SMD_Response(message="Please Provide a Valid ID or "
+                                                 "Something Went Wrong"),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteActorDetailsWithID(GenericAPIView):
+    serializer_class = ActorSerializer
+
+    def delete(self, request, id, *args, **kwargs):
+        """
+        :param request:Request for Delete Actor Details
+        :param id: Here, we pass a ID for deleting requested Actor ID
+        :return: This function delete the requested Actor Details from the DATABASE
+        """
+        try:
+            actor_obj = Actor.objects.filter(id=id)
+            if actor_obj:
+                actor_obj.delete()
+                logger.info("Actor Details Deleted")
+                return Response(SMD_Response(status=True, message="Successfully Deleted the Actor Details"),
+                                status=status.HTTP_204_NO_CONTENT)
+            else:
+                logger.error("Please provide valid details")
+                smd = SMD_Response(message="Not found such Detail")
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("SOMETHING WENT WRONG" + str(e))
+            return Response(SMD_Response(message="Not a VALID ID or Something went wrong!!"),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
 class AddProducer(GenericAPIView):
     serializer_class = ProducerSerializer
 
@@ -128,7 +192,7 @@ class AddProducer(GenericAPIView):
             return Response(smd, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetAllProducer(GenericAPIView):
+class GetAllProducers(GenericAPIView):
     serializer_class = ProducerSerializer
 
     def get(self, request, *args, **kwargs):
@@ -186,6 +250,71 @@ class GetProducerWithID(GenericAPIView):
             smd = SMD_Response(status=False, message="Something Went Wrong")
             return Response(smd, status=status.HTTP_404_NOT_FOUND)
 
+
+class UpdateProducerDetailsWithID(GenericAPIView):
+    serializer_class = ProducerSerializer
+
+    def put(self, request, id, *args, **kwargs):
+        """
+        :param request:Request for put(update) the Producer Details
+        :param id:Here, we pass an ID for update of a requested Producer
+        :return:It will Update a requested Producer Details in Database
+        """
+        try:
+            producer_obj = Producer.objects.get(id=id)
+            if producer_obj is not None:
+                data = request.data
+                serializer = ProducerSerializer(producer_obj, data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    logger.info("Successfully Updated the Details of the Producer")
+                    smd = SMD_Response(status=True, message="Producer Details Successfully Updated",
+                                       data=[serializer.data])
+                    return Response(smd, status=status.HTTP_202_ACCEPTED)
+                else:
+                    logger.error("Please provide valid details")
+                    smd = SMD_Response(message="Invalid Request/No such query exist",
+                                       data=[serializer.errors])
+                    return Response(smd, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                logger.info("No DATA Present")
+                return Response(SMD_Response(message="No Data Present"),
+                                status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("SOMETHING WENT WRONG" + str(e))
+            return Response(SMD_Response(message="Please Provide a Valid ID or "
+                                                 "Something Went Wrong"),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteProducerDetailsWithID(GenericAPIView):
+    serializer_class = ProducerSerializer
+
+    def delete(self, request, id, *args, **kwargs):
+        """
+        :param request:Request for Delete Producer Details
+        :param id: Here, we pass a ID for deleting requested Producer ID
+        :return: This function delete the requested Producer Details from the DATABASE
+        """
+        try:
+            producer_obj = Producer.objects.filter(id=id)
+            if producer_obj:
+                producer_obj.delete()
+                logger.info("Producer Details Deleted")
+                return Response(SMD_Response(status=True, message="Successfully Deleted the Producer Details"),
+                                status=status.HTTP_204_NO_CONTENT)
+            else:
+                logger.error("Please provide valid details")
+                smd = SMD_Response(message="Not found such Detail")
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("SOMETHING WENT WRONG" + str(e))
+            return Response(SMD_Response(message="Not a VALID ID or Something went wrong!!"),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
 class AddMovie(GenericAPIView):
     serializer_class = MovieSerializer
 
@@ -239,7 +368,7 @@ class AddMovie(GenericAPIView):
             return Response(smd, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetAllMovie(GenericAPIView):
+class GetAllMovies(GenericAPIView):
     serializer_class = ProducerSerializer
 
     def get(self, request, *args, **kwargs):
@@ -296,3 +425,91 @@ class GetMovieWithID(GenericAPIView):
             logger.warning("Something went wrong" + str(e))
             smd = SMD_Response(status=False, message="Something Went Wrong")
             return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+
+class UpdateMovieDetailsWithID(GenericAPIView):
+    serializer_class = MovieSerializer
+
+    def put(self, request, id, *args, **kwargs):
+        """
+        :param request:request for put(update) the Movie Details
+        :param id:Here, we pass an ID for update of a requested Movie
+        :return:It will Update a requested Movie Details in Database
+        """
+        try:
+            # import pdb
+            # pdb.set_trace()
+            movie_obj = Movie.objects.get(id=id)
+            if movie_obj is not None:
+                data = request.data
+                if 'actor' in data:
+                    actor_list = []
+                    actors = data['actor']
+                    for name in actors:
+                        obj = Actor.objects.get(actor_name=name)
+                        if obj:
+                            actor_list.append(obj.id)
+                        else:
+                            return Response(SMD_Response(message="Something went wrong when"
+                                                                 "while adding actors"))
+                    data['actor'] = actor_list
+                if 'producer' in data:
+                    producer_list = []
+                    producers = data['producer']
+                    for name in producers:
+                        obj = Producer.objects.get(producer_name=name)
+                        if obj:
+                            producer_list.append(obj.id)
+                        else:
+                            return Response(SMD_Response(message="Something went wrong when"
+                                                                 "while adding producers"))
+                    data['producer'] = producer_list
+                serializer = MovieSerializer(movie_obj, data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    logger.info("Successfully Updated the Details of the a Movie")
+                    smd = SMD_Response(status=True, message="Movie Details Successfully Updated",
+                                       data=[serializer.data])
+                    return Response(smd, status=status.HTTP_202_ACCEPTED)
+                else:
+                    logger.error("Please provide valid details")
+                    smd = SMD_Response(message="Invalid Request/No such query exist",
+                                       data=[serializer.errors])
+                    return Response(smd, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                logger.info("No DATA Present")
+                return Response(SMD_Response(message="No Data Present"),
+                                status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("SOMETHING WENT WRONG" + str(e))
+            return Response(SMD_Response(message="Please Provide a Valid ID or "
+                                                 "Something Went Wrong"),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteMovieDetailsWithID(GenericAPIView):
+    serializer_class = MovieSerializer
+
+    def delete(self, request, id, *args, **kwargs):
+        """
+        :param request:Request for Delete Movie Details
+        :param id: Here, we pass a ID for deleting requested Movie ID
+        :return: This function delete the requested Movie Details from the DATABASE
+        """
+        try:
+            movie_obj = Movie.objects.filter(id=id)
+            if movie_obj:
+                movie_obj.delete()
+                logger.info("Movie Details Deleted")
+                return Response(SMD_Response(status=True, message="Successfully Deleted the Movie Details"),
+                                status=status.HTTP_204_NO_CONTENT)
+            else:
+                logger.error("Please provide valid details")
+                smd = SMD_Response(message="Not found such Detail")
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("SOMETHING WENT WRONG" + str(e))
+            return Response(SMD_Response(message="Not a VALID ID or Something went wrong!!"),
+                            status=status.HTTP_400_BAD_REQUEST)
