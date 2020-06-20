@@ -68,6 +68,38 @@ class GetAllActor(GenericAPIView):
             return Response(smd, status=status.HTTP_404_NOT_FOUND)
 
 
+class GetActorWithID(GenericAPIView):
+    serializer_class = ActorSerializer
+
+    def get(self, request, id, *args, **kwargs):
+        """
+        :param request: request for get the particular Actor Details
+        :param id: Here, we pass an ID for update of a specific Actor Object
+        :return: It will get a requested Actor with ID from the Database
+        """
+        try:
+            # import pdb
+            # pdb.set_trace()
+            actor_data = Actor.objects.filter(id=id)
+            if actor_data:
+                serializer = ActorSerializer(actor_data, many=True)
+                logger.info("Successfully Read Actor Details")
+                smd = SMD_Response(status=True, message="Successfully Get the Requested Actor Details",
+                                   data=[serializer.data])
+                logger.info('Successfully Get Actor Details')
+                return Response(smd, status=status.HTTP_200_OK)
+            else:
+                logger.error("No data available/invalid id")
+                smd = SMD_Response(status=False, message="No Content Available",
+                                   data=[])
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("Something went wrong" + str(e))
+            smd = SMD_Response(status=False, message="Something Went Wrong")
+            return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+
 class AddProducer(GenericAPIView):
     serializer_class = ProducerSerializer
 
@@ -122,6 +154,37 @@ class GetAllProducer(GenericAPIView):
             smd = SMD_Response(message="Something went wrong")
             return Response(smd, status=status.HTTP_404_NOT_FOUND)
 
+
+class GetProducerWithID(GenericAPIView):
+    serializer_class = ProducerSerializer
+
+    def get(self, request, id, *args, **kwargs):
+        """
+        :param request: request for get the particular Producer Details
+        :param id: Here, we pass an ID for update of a specific Producer Object
+        :return: It will get a requested Producer with ID from the Database
+        """
+        try:
+            # import pdb
+            # pdb.set_trace()
+            producer_data = Producer.objects.filter(id=id)
+            if producer_data:
+                serializer = ProducerSerializer(producer_data, many=True)
+                logger.info("Successfully Read Producer Details")
+                smd = SMD_Response(status=True, message="Successfully Get the Requested Producer Details",
+                                   data=[serializer.data])
+                logger.info('Successfully Get Producer Details')
+                return Response(smd, status=status.HTTP_200_OK)
+            else:
+                logger.error("No data available/invalid id")
+                smd = SMD_Response(status=False, message="No Content Available",
+                                   data=[])
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("Something went wrong" + str(e))
+            smd = SMD_Response(status=False, message="Something Went Wrong")
+            return Response(smd, status=status.HTTP_404_NOT_FOUND)
 
 class AddMovie(GenericAPIView):
     serializer_class = MovieSerializer
@@ -200,4 +263,36 @@ class GetAllMovie(GenericAPIView):
         except Exception as e:
             logger.warning("Something went wrong-" + str(e))
             smd = SMD_Response(message="Something went wrong")
+            return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetMovieWithID(GenericAPIView):
+    serializer_class = MovieSerializer
+
+    def get(self, request, id, *args, **kwargs):
+        """
+        :param request: request for get the particular Movie Details
+        :param id: Here, we pass an ID for update of a specific Movie Object
+        :return: It will get a requested Movie with ID from the Database
+        """
+        try:
+            # import pdb
+            # pdb.set_trace()
+            movie_data = Movie.objects.filter(id=id)
+            if movie_data:
+                serializer = MovieSerializer(movie_data, many=True)
+                logger.info("Successfully Read Movie Details")
+                smd = SMD_Response(status=True, message="Successfully Get the Requested Movie Details",
+                                   data=[serializer.data])
+                logger.info('Successfully Get Movie Details')
+                return Response(smd, status=status.HTTP_200_OK)
+            else:
+                logger.error("No data available/invalid id")
+                smd = SMD_Response(status=False, message="No Content Available",
+                                   data=[])
+                return Response(smd, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.warning("Something went wrong" + str(e))
+            smd = SMD_Response(status=False, message="Something Went Wrong")
             return Response(smd, status=status.HTTP_404_NOT_FOUND)
