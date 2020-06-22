@@ -1,9 +1,15 @@
+"""
+******************************************************************************************************************
+Purpose: In this views module, I created a rest_api's(CRUD operations) for ACTORS, PRODUCERS, MOVIES
+Author:  KARTIKEY PARASHAR
+Since :  18-06-2020
+******************************************************************************************************************
+"""
 # Create your views here.
 import logging
 
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 
 from Lib.smd_response import SMD_Response
@@ -513,3 +519,5 @@ class DeleteMovieDetailsWithID(GenericAPIView):
             logger.warning("SOMETHING WENT WRONG" + str(e))
             return Response(SMD_Response(message="Not a VALID ID or Something went wrong!!"),
                             status=status.HTTP_400_BAD_REQUEST)
+
+
