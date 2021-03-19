@@ -2,5 +2,5 @@ django==2.2.10
 django-rest-swagger==2.2.0
 djangorestframework==3.11.0
 psycopg2==2.8.5
-Pillow==7.1.2
+Pillow==8.1.1
 Fabric3==1.14.post1
